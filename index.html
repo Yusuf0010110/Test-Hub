@@ -10,10 +10,11 @@
   main{max-width:600px;margin:20px auto;padding:0 10px}
   .test-btn{display:block;width:100%;padding:12px;margin:8px 0;font-size:18px;background:#4a90e2;color:white;border:none;border-radius:8px;cursor:pointer;transition:0.2s}
   .test-btn:hover{background:#357ABD}
-  .question, .result{margin:20px 0;padding:16px;background:#fff;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
+  .question, .result, .optionSelect{margin:20px 0;padding:16px;background:#fff;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
   .options button{display:block;width:100%;padding:10px;margin:6px 0;border-radius:6px;border:1px solid #ccc;background:#f8f9fa;cursor:pointer;transition:0.2s}
   .options button:hover{background:#e1e5ea}
   #backBtn{margin-top:12px;background:#888;color:white}
+  select{width:100%;padding:10px;margin-top:8px;border-radius:6px;border:1px solid #ccc;font-size:16px}
 </style>
 </head>
 <body>
@@ -24,7 +25,12 @@
     <button class="test-btn" onclick="startTest('anxiety')">Anxiety Test</button>
     <button class="test-btn" onclick="startTest('iq')">IQ Test</button>
     <button class="test-btn" onclick="startTest('personality')">Personality Test</button>
-    <button class="test-btn" onclick="startTest('crush')">Do You Like Her?</button>
+    <button class="test-btn" onclick="startTest('crush')">Do You Like Them?</button>
+    <button class="test-btn" onclick="startTest('likedMe')">Do They Like Me?</button>
+    <button class="test-btn" onclick="startTest('stress')">Stress Level Test</button>
+    <button class="test-btn" onclick="startTest('confidence')">Confidence Test</button>
+    <button class="test-btn" onclick="startTest('food')">Which Food Are You?</button>
+    <button class="test-btn" onclick="startTest('humor')">Fun Humor Test</button>
   </div>
   <div id="testArea" style="display:none"></div>
 </main>
@@ -34,12 +40,16 @@ const tests = {
     questions:[
       {q:"I feel down or sad most of the time.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
       {q:"I have little interest or pleasure in doing things.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
-      {q:"I feel hopeless about the future.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]}
+      {q:"I feel hopeless about the future.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
+      {q:"I have trouble sleeping or sleep too much.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
+      {q:"I feel tired or have little energy.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
+      {q:"I feel bad about myself.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
+      {q:"I have difficulty concentrating.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]}
     ],
     result:(score)=>{
-      if(score<=2) return "Minimal depression";
-      if(score<=4) return "Mild depression";
-      if(score<=6) return "Moderate depression";
+      if(score<=4) return "Minimal depression";
+      if(score<=9) return "Mild depression";
+      if(score<=14) return "Moderate depression";
       return "Severe depression — consider seeking help";
     }
   },
@@ -47,25 +57,31 @@ const tests = {
     questions:[
       {q:"I feel nervous or anxious frequently.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
       {q:"I worry about things I can't control.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
-      {q:"I have trouble relaxing.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]}
+      {q:"I have trouble relaxing.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
+      {q:"I feel restless or on edge.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
+      {q:"I get easily irritated.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
+      {q:"I have physical symptoms like racing heart.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]}
     ],
     result:(score)=>{
-      if(score<=2) return "Minimal anxiety";
-      if(score<=4) return "Mild anxiety";
-      if(score<=6) return "Moderate anxiety";
+      if(score<=5) return "Minimal anxiety";
+      if(score<=10) return "Mild anxiety";
+      if(score<=15) return "Moderate anxiety";
       return "Severe anxiety — consider consulting a professional";
     }
   },
   iq:{
     questions:[
-      {q:"What comes next in the sequence: 2,4,8,16,...?",a:[{text:"32",val:1},{text:"20",val:0},{text:"24",val:0},{text:"36",val:0}]},
-      {q:"If all bloops are razzies and all razzies are lazzies, are all bloops lazzies?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
-      {q:"Which is the odd one out: Apple, Banana, Carrot, Grape?",a:[{text:"Carrot",val:1},{text:"Banana",val:0},{text:"Apple",val:0},{text:"Grape",val:0}]}
+      {q:"What comes next in the sequence: 1, 4, 9, 16, 25,...?",a:[{text:"36",val:1},{text:"30",val:0},{text:"35",val:0},{text:"32",val:0}]},
+      {q:"If some Wugs are Zogs and some Zogs are Nogs, are all Wugs Nogs?",a:[{text:"Yes",val:0},{text:"No",val:1}]},
+      {q:"Find the missing number: 7, 14, 28, 56, ?",a:[{text:"112",val:1},{text:"110",val:0},{text:"108",val:0},{text:"120",val:0}]},
+      {q:"Which shape comes next: ▲, ▼, ▲, ▼, ▲, ?",a:[{text:"▼",val:1},{text:"▲",val:0},{text:"■",val:0},{text:"◆",val:0}]},
+      {q:"A man walks 3 miles north, 3 miles east, and 3 miles south. Where is he relative to start?",a:[{text:"3 miles east",val:1},{text:"3 miles north",val:0},{text:"Back at start",val:0},{text:"3 miles south",val:0}]},
+      {q:"If 2 pencils cost 8 cents, how much do 5 pencils cost?",a:[{text:"20 cents",val:1},{text:"18 cents",val:0},{text:"16 cents",val:0},{text:"22 cents",val:0}]}
     ],
     result:(score)=>{
-      if(score===3) return "Genius IQ! 🧠";
-      if(score===2) return "Above average IQ";
-      if(score===1) return "Average IQ";
+      if(score===6) return "Genius IQ! 🧠";
+      if(score>=4) return "Above average IQ";
+      if(score>=2) return "Average IQ";
       return "Needs practice 😉";
     }
   },
@@ -73,26 +89,119 @@ const tests = {
     questions:[
       {q:"Do you enjoy social gatherings?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
       {q:"Do you prefer planning ahead?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
-      {q:"Do you rely more on logic than feelings?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+      {q:"Do you rely more on logic than feelings?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you enjoy creative activities?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you like to take risks?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you prefer being alone sometimes?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
     ],
     result:(score)=>{
-      if(score===3) return "Analytical & outgoing";
-      if(score===2) return "Balanced personality";
-      if(score===1) return "Introverted thinker";
+      if(score>=5) return "Adventurous & outgoing";
+      if(score>=3) return "Balanced personality";
+      if(score>=1) return "Introverted thinker";
       return "Creative & spontaneous";
     }
   },
   crush:{
     questions:[
-      {q:"Do you think about her often?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
-      {q:"Do you enjoy spending time with her?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
-      {q:"Do you get nervous around her?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+      {q:"Do you think about them often?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you enjoy spending time with them?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you get nervous around them?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you like talking to them daily?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you care about their opinion?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you think they'd notice if you stopped talking?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+    ],
+    result:(score,gender)=>{
+      if(gender==='boy'){
+        if(score>=5) return "You definitely like him 😏";
+        if(score>=3) return "You probably like him";
+        if(score>=1) return "You might like him";
+        return "Not sure 😅";
+      }else{
+        if(score>=5) return "You definitely like her 😏";
+        if(score>=3) return "You probably like her";
+        if(score>=1) return "You might like her";
+        return "Not sure 😅";
+      }
+    }
+  },
+  likedMe:{
+    questions:[
+      {q:"Do they often initiate conversation with you?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they laugh at your jokes?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they compliment you?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they try to spend time with you?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they remember small details about you?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they seem interested in your opinion?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+    ],
+    result:(score,gender)=>{
+      if(gender==='boy'){
+        if(score>=5) return "He definitely likes you 😏";
+        if(score>=3) return "He probably likes you";
+        if(score>=1) return "He might like you";
+        return "Not sure 😅";
+      }else{
+        if(score>=5) return "She definitely likes you 😏";
+        if(score>=3) return "She probably likes you";
+        if(score>=1) return "She might like you";
+        return "Not sure 😅";
+      }
+    }
+  },
+  stress:{
+    questions:[
+      {q:"I feel overwhelmed by tasks.",a:[{text:"Never",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Always",val:3}]},
+      {q:"I struggle to relax after work/school.",a:[{text:"Never",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Always",val:3}]},
+      {q:"I have headaches or tension from stress.",a:[{text:"Never",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Always",val:3}]},
+      {q:"I feel irritable or moody.",a:[{text:"Never",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Always",val:3}]},
+      {q:"I find it hard to focus on tasks.",a:[{text:"Never",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Always",val:3}]}
     ],
     result:(score)=>{
-      if(score===3) return "Definitely likes her 😏";
-      if(score===2) return "Probably likes her";
-      if(score===1) return "Maybe likes her";
-      return "Not sure 😅";
+      if(score<=3) return "Low stress";
+      if(score<=6) return "Moderate stress";
+      if(score<=9) return "High stress";
+      return "Very high stress — consider relaxation techniques";
+    }
+  },
+  confidence:{
+    questions:[
+      {q:"I speak up when I have an opinion.",a:[{text:"Never",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Always",val:3}]},
+      {q:"I feel comfortable in social situations.",a:[{text:"Never",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Always",val:3}]},
+      {q:"I take pride in my achievements.",a:[{text:"Never",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Always",val:3}]},
+      {q:"I trust my decisions.",a:[{text:"Never",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Always",val:3}]}
+    ],
+    result:(score)=>{
+      if(score<=3) return "Low confidence";
+      if(score<=6) return "Moderate confidence";
+      if(score<=9) return "High confidence";
+      return "Very high confidence!";
+    }
+  },
+  food:{
+    questions:[
+      {q:"Do you prefer sweet or savory?",a:[{text:"Sweet",val:1},{text:"Savory",val:2}]},
+      {q:"Do you like spicy food?",a:[{text:"Yes",val:2},{text:"No",val:1}]},
+      {q:"Do you enjoy trying new dishes?",a:[{text:"Yes",val:2},{text:"No",val:1}]},
+      {q:"Do you eat mostly healthy foods?",a:[{text:"Yes",val:2},{text:"No",val:1}]}
+    ],
+    result:(score)=>{
+      if(score<=4) return "Chocolate 🍫";
+      if(score<=6) return "Pizza 🍕";
+      if(score<=7) return "Sushi 🍣";
+      return "Ice Cream 🍦";
+    }
+  },
+  humor:{
+    questions:[
+      {q:"Do you enjoy puns?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you laugh at absurd things?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you enjoy sarcastic jokes?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you often share funny memes?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+    ],
+    result:(score)=>{
+      if(score>=3) return "You are hilarious 😂";
+      if(score===2) return "You have a good sense of humor 😏";
+      if(score===1) return "You like some jokes 😅";
+      return "Serious vibes 😐";
     }
   }
 };
@@ -100,12 +209,30 @@ const tests = {
 let currentTest=null;
 let currentQ=0;
 let score=0;
+let genderChoice=null;
 
 function startTest(testName){
   currentTest = tests[testName];
-  currentQ=0; score=0;
+  currentQ=0; score=0; genderChoice=null;
   document.getElementById('menu').style.display='none';
   document.getElementById('testArea').style.display='block';
+  if(testName==='crush' || testName==='likedMe'){
+    document.getElementById('testArea').innerHTML = `<div class="optionSelect">
+      <label>Select gender:</label>
+      <select id="genderSelect">
+        <option value="boy">Boy</option>
+        <option value="girl">Girl</option>
+      </select>
+      <button class="test-btn" onclick="startGenderTest()">Start</button>
+    </div>`;
+  }else{
+    showQuestion();
+  }
+}
+
+function startGenderTest(){
+  const select = document.getElementById('genderSelect');
+  genderChoice = select.value;
   showQuestion();
 }
 
@@ -127,7 +254,12 @@ function answer(val){
 }
 
 function showResult(){
-  const res = currentTest.result(score);
+  let res = '';
+  if(currentTest===tests.crush || currentTest===tests.likedMe){
+    res = currentTest.result(score, genderChoice);
+  }else{
+    res = currentTest.result(score);
+  }
   document.getElementById('testArea').innerHTML = `<div class="result"><strong>Result:</strong><br>${res}</div>
   <button id="backBtn" onclick="backToMenu()">Back to Menu</button>`;
 }
