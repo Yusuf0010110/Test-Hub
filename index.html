@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Test Hub</title>
+<style>
+  body{margin:0;font-family:sans-serif;background:#f0f4f8;color:#111}
+  header{background:#4a90e2;color:white;padding:14px;text-align:center;font-size:24px;font-weight:700}
+  main{max-width:600px;margin:20px auto;padding:0 10px}
+  .test-btn{display:block;width:100%;padding:12px;margin:8px 0;font-size:18px;background:#4a90e2;color:white;border:none;border-radius:8px;cursor:pointer;transition:0.2s}
+  .test-btn:hover{background:#357ABD}
+  .question, .result{margin:20px 0;padding:16px;background:#fff;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
+  .options button{display:block;width:100%;padding:10px;margin:6px 0;border-radius:6px;border:1px solid #ccc;background:#f8f9fa;cursor:pointer;transition:0.2s}
+  .options button:hover{background:#e1e5ea}
+  #backBtn{margin-top:12px;background:#888;color:white}
+</style>
+</head>
+<body>
+<header>Ultimate Test Hub</header>
+<main>
+  <div id="menu">
+    <button class="test-btn" onclick="startTest('depression')">Depression Test</button>
+    <button class="test-btn" onclick="startTest('anxiety')">Anxiety Test</button>
+    <button class="test-btn" onclick="startTest('iq')">IQ Test</button>
+    <button class="test-btn" onclick="startTest('personality')">Personality Test</button>
+    <button class="test-btn" onclick="startTest('crush')">Do You Like Her?</button>
+  </div>
+  <div id="testArea" style="display:none"></div>
+</main>
+<script>
+const tests = {
+  depression:{
+    questions:[
+      {q:"I feel down or sad most of the time.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
+      {q:"I have little interest or pleasure in doing things.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
+      {q:"I feel hopeless about the future.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]}
+    ],
+    result:(score)=>{
+      if(score<=2) return "Minimal depression";
+      if(score<=4) return "Mild depression";
+      if(score<=6) return "Moderate depression";
+      return "Severe depression — consider seeking help";
+    }
+  },
+  anxiety:{
+    questions:[
+      {q:"I feel nervous or anxious frequently.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
+      {q:"I worry about things I can't control.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
+      {q:"I have trouble relaxing.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]}
+    ],
+    result:(score)=>{
+      if(score<=2) return "Minimal anxiety";
+      if(score<=4) return "Mild anxiety";
+      if(score<=6) return "Moderate anxiety";
+      return "Severe anxiety — consider consulting a professional";
+    }
+  },
+  iq:{
+    questions:[
+      {q:"What comes next in the sequence: 2,4,8,16,...?",a:[{text:"32",val:1},{text:"20",val:0},{text:"24",val:0},{text:"36",val:0}]},
+      {q:"If all bloops are razzies and all razzies are lazzies, are all bloops lazzies?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Which is the odd one out: Apple, Banana, Carrot, Grape?",a:[{text:"Carrot",val:1},{text:"Banana",val:0},{text:"Apple",val:0},{text:"Grape",val:0}]}
+    ],
+    result:(score)=>{
+      if(score===3) return "Genius IQ! 🧠";
+      if(score===2) return "Above average IQ";
+      if(score===1) return "Average IQ";
+      return "Needs practice 😉";
+    }
+  },
+  personality:{
+    questions:[
+      {q:"Do you enjoy social gatherings?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you prefer planning ahead?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you rely more on logic than feelings?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+    ],
+    result:(score)=>{
+      if(score===3) return "Analytical & outgoing";
+      if(score===2) return "Balanced personality";
+      if(score===1) return "Introverted thinker";
+      return "Creative & spontaneous";
+    }
+  },
+  crush:{
+    questions:[
+      {q:"Do you think about her often?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you enjoy spending time with her?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you get nervous around her?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+    ],
+    result:(score)=>{
+      if(score===3) return "Definitely likes her 😏";
+      if(score===2) return "Probably likes her";
+      if(score===1) return "Maybe likes her";
+      return "Not sure 😅";
+    }
+  }
+};
+
+let currentTest=null;
+let currentQ=0;
+let score=0;
+
+function startTest(testName){
+  currentTest = tests[testName];
+  currentQ=0; score=0;
+  document.getElementById('menu').style.display='none';
+  document.getElementById('testArea').style.display='block';
+  showQuestion();
+}
+
+function showQuestion(){
+  const qa = currentTest.questions[currentQ];
+  const html = `<div class="question">${qa.q}</div>
+  <div class="options">${qa.a.map((opt,i)=>`<button onclick="answer(${opt.val})">${opt.text}</button>`).join('')}</div>`;
+  document.getElementById('testArea').innerHTML = html;
+}
+
+function answer(val){
+  score += val;
+  currentQ++;
+  if(currentQ>=currentTest.questions.length){
+    showResult();
+  }else{
+    showQuestion();
+  }
+}
+
+function showResult(){
+  const res = currentTest.result(score);
+  document.getElementById('testArea').innerHTML = `<div class="result"><strong>Result:</strong><br>${res}</div>
+  <button id="backBtn" onclick="backToMenu()">Back to Menu</button>`;
+}
+
+function backToMenu(){
+  document.getElementById('menu').style.display='block';
+  document.getElementById('testArea').style.display='none';
+}
+</script>
+</body>
+</html>
