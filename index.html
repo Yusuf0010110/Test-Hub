@@ -40,7 +40,7 @@ const tests = {
   depression:{
     questions:[
       {q:"I feel down or sad most of the time.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
-      {q:"I have little interest or pleasure in doing things.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
+      {q:"I have little interest in doing things I enjoy.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
       {q:"I feel hopeless about the future.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
       {q:"I have trouble sleeping or sleep too much.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
       {q:"I feel tired or have little energy.",a:[{text:"Not at all",val:0},{text:"Sometimes",val:1},{text:"Often",val:2},{text:"Almost always",val:3}]},
@@ -118,16 +118,159 @@ const tests = {
       return "Introverted thinker";
     }
   },
-  crush:{questions:[], result:()=>""}, // already filled in earlier Attractive example
-  likedMe:{questions:[], result:()=>""},
-  attractive:{questions:[], result:()=>""},
-  stress:{questions:[], result:()=>""},
-  confidence:{questions:[], result:()=>""},
-  food:{questions:[], result:()=>""},
-  humor:{questions:[], result:()=>""}
+  crush:{
+    questions:[
+      {q:"Do you think about them often?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you enjoy spending time with them?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you get nervous around them?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you like talking to them daily?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you care about their opinion?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you think they'd notice if you stopped talking?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you get jealous if they talk to others?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you want to share your secrets with them?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you feel happy when they are around?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you imagine a future with them?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you notice small things about them?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+    ],
+    result:(score,gender)=>{
+      if(gender==='boy'){
+        if(score>=9) return "You definitely like her 😏";
+        if(score>=6) return "You probably like her";
+        if(score>=3) return "You might like her";
+        return "Not sure 😅";
+      }else{
+        if(score>=9) return "You definitely like him 😏";
+        if(score>=6) return "You probably like him";
+        if(score>=3) return "You might like him";
+        return "Not sure 😅";
+      }
+    }
+  },
+  likedMe:{
+    questions:[
+      {q:"Do they often initiate conversation with you?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they laugh at your jokes?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they compliment you?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they try to spend time with you?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they remember small details about you?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they seem interested in your opinion?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they smile at you often?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they seem happy when you are around?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they compliment your style?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do they initiate plans to meet?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+    ],
+    result:(score,gender)=>{
+      if(gender==='boy'){
+        if(score>=7) return "She definitely likes you 😏";
+        if(score>=4) return "She probably likes you";
+        if(score>=2) return "She might like you";
+        return "Not sure 😅";
+      }else{
+        if(score>=7) return "He definitely likes you 😏";
+        if(score>=4) return "He probably likes you";
+        if(score>=2) return "He might like you";
+        return "Not sure 😅";
+      }
+    }
+  },
+  attractive:{
+    questions:[
+      {q:"Do you take care of your appearance?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do people compliment your looks?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you dress neatly?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you smile often?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you maintain good hygiene?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you exercise regularly?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you have confidence in your looks?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do people notice you in a crowd?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you feel good about your style?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you smile in photos?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do people often ask for your opinion?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+    ],
+    result:(score)=>{
+      if(score>=9) return "You are very attractive 😎";
+      if(score>=6) return "You are attractive";
+      if(score>=3) return "Average attractiveness";
+      return "Work on your charm 😉";
+    }
+  },
+  stress:{
+    questions:[
+      {q:"Do you often feel overwhelmed?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you have trouble sleeping due to stress?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you feel tense or irritable?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you feel pressure from work/school?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you get headaches or stomach issues?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you struggle to focus?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you have anxiety about the future?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you feel exhausted often?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you get frustrated easily?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you feel like you have too much to do?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+    ],
+    result:(score)=>{
+      if(score>=8) return "High stress — take breaks!";
+      if(score>=5) return "Moderate stress — manage carefully";
+      return "Low stress — keep it up!";
+    }
+  },
+  confidence:{
+    questions:[
+      {q:"Do you speak up in group discussions?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you feel comfortable meeting new people?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you stand by your decisions?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you try new things even if unsure?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you express your opinions freely?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you accept compliments easily?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you feel secure in yourself?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you take leadership roles?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you feel proud of your achievements?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you try to improve yourself constantly?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+    ],
+    result:(score)=>{
+      if(score>=8) return "Very confident 💪";
+      if(score>=5) return "Moderately confident";
+      return "Needs confidence boost 😉";
+    }
+  },
+  food:{
+    questions:[
+      {q:"Do you prefer spicy food?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you like sweet desserts?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you enjoy trying new cuisines?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you eat breakfast daily?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you like fast food?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you like fruits?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you like vegetables?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you enjoy cooking?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you drink coffee?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you eat late at night?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+    ],
+    result:(score)=>{
+      if(score>=8) return "You are a food explorer 🍽️";
+      if(score>=5) return "Balanced food tastes";
+      return "Simple foodie 😋";
+    }
+  },
+  humor:{
+    questions:[
+      {q:"Do you enjoy telling jokes?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you laugh at puns?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you watch comedy shows often?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you prank friends sometimes?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you enjoy sarcastic humor?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you like memes?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you laugh at yourself?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you enjoy dark humor?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you share jokes often?",a:[{text:"Yes",val:1},{text:"No",val:0}]},
+      {q:"Do you enjoy funny movies?",a:[{text:"Yes",val:1},{text:"No",val:0}]}
+    ],
+    result:(score)=>{
+      if(score>=8) return "Hilarious sense of humor 😂";
+      if(score>=5) return "Pretty funny";
+      return "Needs to laugh more 😅";
+    }
+  }
 };
-
-// Due to space, I’ve shown examples for depression, anxiety, IQ, personality, and you can copy the earlier crush/attractive code above into this same structure for fully working test questions.
 
 let currentTest=null;
 let currentQ=0;
